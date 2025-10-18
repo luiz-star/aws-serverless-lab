@@ -1,4 +1,8 @@
 ## Laboratório AWS Serverless: API Gateway + Lambda + DynamoDB
+
+
+<img src="docs_images_arquitetura.svg" alt="Diagrama da arquitetura serverless" style="max-width: 960px; width: 100%; height: auto; display: block; margin: 0.5rem 0;">
+
 Este repositório contém um laboratório prático para criar uma API serverless na AWS utilizando CloudFormation, API Gateway, AWS Lambda e Amazon DynamoDB.
 
 * Template IaC: serverless-lab.yaml
