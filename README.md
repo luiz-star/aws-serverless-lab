@@ -18,75 +18,62 @@ Infraestrutura como código (IaC)
 Observabilidade integrada (CloudWatch)
 Pré-requisitos
 Conta AWS ativa
-AWS CLI instalada e configurada (aws configure)
-Permissão para CloudFormation, Lambda, API Gateway e DynamoDB
+AWS CLI instalada e configurada: aws configure
+Permissões para CloudFormation, Lambda, API Gateway e DynamoDB
 Git instalado
 Opcional:
 
 Node.js/Python (se quiser alterar a função Lambda)
-cURL ou alguma ferramenta de API (HTTPie, Postman)
-Deploy com CloudFormation
+cURL/HTTPie/Postman para testes de API
+Como fazer o deploy
 Clonar o repositório
+
 git clone https://github.com/luiz-star/aws-serverless-lab.git
 cd aws-serverless-lab
 Validar o template
+
 aws cloudformation validate-template --template-body file://serverless-lab.yaml
-Fazer o deploy
+Deploy
+
 aws cloudformation deploy --stack-name serverless-lab --template-file serverless-lab.yaml --capabilities CAPABILITY_IAM
 Observações:
 
-Se o template usar parâmetros, adicione: --parameter-overrides Param1=valor1 Param2=valor2
-Se preferir outra região: --region us-east-1
-Obter as saídas da stack
+Parâmetros: use --parameter-overrides Param1=valor1 Param2=valor2
+Região: adicione --region us-east-1 (ou a sua)
+Saídas da stack (pegar a URL da API)
 aws cloudformation describe-stacks --stack-name serverless-lab --query "Stacks[0].Outputs" --output table
-Anote a URL do API Gateway (Output: ApiUrl ou semelhante).
-
 Testes rápidos
-Exemplos com cURL. Ajuste a URL e paths conforme as saídas do template.
+Defina API_URL com a URL do API Gateway obtida nas saídas.
 
-Criar/POST
+Criar (POST)
+
 curl -X POST "$API_URL/items" -H "Content-Type: application/json" -d "{"id":"1","message":"hello"}"
+Buscar (GET)
 
-Buscar/GET
 curl "$API_URL/items/1"
+Listar (GET)
 
-Listar/GET
 curl "$API_URL/items"
+Atualizar (PUT)
 
-Atualizar/PUT
 curl -X PUT "$API_URL/items/1" -H "Content-Type: application/json" -d "{"message":"updated"}"
+Remover (DELETE)
 
-Remover/DELETE
 curl -X DELETE "$API_URL/items/1"
-
-Se preferir Postman/Insomnia, importe a URL e crie as rotas correspondentes.
-
 Observabilidade
-Logs da Lambda: CloudWatch Logs (grupo /aws/lambda/NOME_DA_FUNCAO)
+Logs: CloudWatch Logs — grupo /aws/lambda/NOME_DA_FUNCAO
 Métricas: CloudWatch Metrics (Invocations, Errors, Duration, Throttles)
-Tracing distribuído (opcional): AWS X-Ray
-Dicas:
-
-Use logs estruturados em JSON.
-Inclua requestId para correlação entre API Gateway e Lambda.
-Custos
-Recursos utilizam camadas gratuitas, mas podem gerar custo mínimo:
-
-Lambda: invocações e duração
-API Gateway: requests
-DynamoDB: leitura/escrita e armazenamento
-Apague a stack ao finalizar para evitar cobranças.
-
+Tracing opcional: AWS X-Ray
 Limpeza
 aws cloudformation delete-stack --stack-name serverless-lab
 aws cloudformation wait stack-delete-complete --stack-name serverless-lab
-Estrutura do repositório
+Estrutura
 serverless-lab.yaml — Template CloudFormation
-AWS Serverless API Gateway + Lambda + DynamoDB.md — Passo a passo detalhado
-Laboratório sobre Serverless.md — Resumo/guia rápido
-Laboratório sobre Serverless.pdf — Documento em PDF
+AWS Serverless API Gateway + Lambda + DynamoDB.md — Passo a passo
+Laboratório sobre Serverless.md — Resumo
+Laboratório sobre Serverless.pdf — PDF
 Próximos passos
-Adicionar autenticação via Amazon Cognito
-Criar estágio de desenvolvimento/produção no API Gateway
-Habilitar métricas e alarmes no CloudWatch
-Pipeline CI/CD (GitHub Actions) para deploy automático
+Autenticação via Cognito
+Estágios dev/prod no API Gateway
+Alarmes no CloudWatch
+CI/CD com GitHub Actions
